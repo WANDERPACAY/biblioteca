@@ -1,11 +1,23 @@
-<?php 
-  $query = "SELECT * FROM tbladmin WHERE Id = ".$_SESSION['userId']."";
-  $rs = $conn->query($query);
-  $num = $rs->num_rows;
-  $rows = $rs->fetch_assoc();
-  $fullName = $rows['firstName']." ".$rows['lastName'];
+<?php
+// Asegúrate de tener una conexión a la base de datos $conn antes de ejecutar esta parte del código
 
+if (isset($_SESSION['userId'])) {
+    $userId = $_SESSION['userId'];
+
+    $query = "SELECT * FROM usuarios WHERE id = $userId";
+    $rs = $conn->query($query);
+
+    if ($rs && $rs->num_rows > 0) {
+        $rows = $rs->fetch_assoc();
+        $fullName = $rows['nombre']." ".$rows['apellido'];
+    } else {
+        $fullName = "Usuario desconocido";
+    }
+} else {
+    $fullName = "Usuario no identificado";
+}
 ?>
+
 <nav class="navbar navbar-expand navbar-light bg-gradient-primary topbar mb-4 static-top">
           <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">
             <i class="fa fa-bars"></i>

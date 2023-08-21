@@ -2,7 +2,7 @@
 $host = "localhost";
 $user = "root" /*"id20936476_root"*/;
 $pass = ""/*"Wander1405."*/;
-$db = "gestion_estudiantes"/* "id20936476_gestion_estudiantes"*/;
+$db = "prueba"/* "id20936476_gestion_estudiantes"*/;
 
 $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) {

@@ -1,135 +1,57 @@
 <?php
-include 'includes/conn.php';
 session_start();
+// Establecer la conexión a la base de datos (reemplaza con tus propios detalles de conexión)
+include '../includes/conn.php';
+
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $usuario = $_POST["usuario"];
+    $contrasena = $_POST["contrasena"];
+
+    // Consultar la base de datos de clientes
+    $consulta_clientes = "SELECT * FROM clientes WHERE usuario = '$usuario' AND contrasena = '$contrasena'";
+    $resultado_clientes = $conn->query($consulta_clientes);
+
+    // Consultar la base de datos de usuarios
+    $consulta_usuarios = "SELECT * FROM usuarios WHERE usuario = '$usuario' AND contrasena = '$contrasena'";
+    $resultado_usuarios = $conn->query($consulta_usuarios);
+
+    if ($resultado_clientes->num_rows == 1) {
+        // Inicio de sesión exitoso para cliente
+        $_SESSION['usuario'] = $usuario;
+        header("Location: inicioclientes.php");
+    } elseif ($resultado_usuarios->num_rows == 1) {
+        // Inicio de sesión exitoso para usuario
+        $_SESSION['usuario'] = $usuario;
+        header("Location: iniciousuarios.php");
+    } else {
+        // Inicio de sesión fallido
+        $mensaje_error = "Credenciales incorrectas. Por favor, intenta nuevamente.";
+    }
+}
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Login</title>
-    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="../css/ruang-admin.min.css" rel="stylesheet">
+    <title>Iniciar sesión</title>
 </head>
 
-<body class="bg-gradient-login" style="background-image: url('img/logo/loral1.jpe00g');">
-    <!-- Login Content -->
-    <div class="container-login">
-        <div class="row justify-content-center">
-            <div class="col-xl-10 col-lg-12 col-md-9">
-                <div class="card shadow-sm my-5">
-                    <div class="card-body p-0">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="login-form">
-                                    <h5 align="center">SISTEMA DE GESTION DE BIBLIOTECA</h5>
-                                    <div class="text-center">
-                                        <img src="img/logo/attnlg.jpg" style="width:100px;height:100px">
-                                        <br><br>
-                                        <h1 class="h4 text-gray-900 mb-4">Iniciar Sesion</h1>
-                                    </div>
-                                    <form class="user" method="Post" action="">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" required name="username" id="exampleInputEmail" placeholder="Ingrese su Usuario">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" name="password" required class="form-control" id="exampleInputPassword" placeholder="Ingrese su Contraseña">
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="custom-control custom-checkbox small" style="line-height: 1.5rem;">
-                                                <input type="checkbox" class="custom-control-input" id="customCheck">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="submit" class="btn btn-success btn-block" value="Ingresar" name="login" />
-                                        </div>
-                                    </form>
+<body>
+    <h2>Iniciar sesión</h2>
+    <form action="login.php" method="post">
+        <label for="usuario">Usuario:</label>
+        <input type="text" id="usuario" name="usuario" required><br>
 
-                                    <?php
+        <label for="contrasena">Contraseña:</label>
+        <input type="text" id="contrasena" name="contrasena" required><br>
 
-                                    if (isset($_POST['login'])) {
-
-                                        $userType = $_POST['userType'];
-                                        $username = $_POST['username'];
-                                        $password = $_POST['password'];
-                                        $password = md5($password);
-
-                                        if ($userType == "Administrator") {
-
-                                            $query = "SELECT * FROM tbladmin WHERE emailAddress = '$username' AND password = '$password'";
-                                            $rs = $conn->query($query);
-                                            $num = $rs->num_rows;
-                                            $rows = $rs->fetch_assoc();
-
-                                            if ($num > 0) {
-
-                                                $_SESSION['userId'] = $rows['Id'];
-                                                $_SESSION['firstName'] = $rows['firstName'];
-                                                $_SESSION['lastName'] = $rows['lastName'];
-                                                $_SESSION['emailAddress'] = $rows['emailAddress'];
-
-                                                echo "<script type = \"text/javascript\">
-        window.location = (\"Admin/index.php\")
-        </script>";
-                                            } else {
-
-                                                echo "<div class='alert alert-danger' role='alert'>
-        Invalid Username/Password!
-        </div>";
-                                            }
-                                        } else if ($userType == "ClassTeacher") {
-
-                                            $query = "SELECT * FROM tblclassteacher WHERE emailAddress = '$username' AND password = '$password'";
-                                            $rs = $conn->query($query);
-                                            $num = $rs->num_rows;
-                                            $rows = $rs->fetch_assoc();
-
-                                            if ($num > 0) {
-
-                                                $_SESSION['userId'] = $rows['Id'];
-                                                $_SESSION['firstName'] = $rows['firstName'];
-                                                $_SESSION['lastName'] = $rows['lastName'];
-                                                $_SESSION['emailAddress'] = $rows['emailAddress'];
-                                                $_SESSION['classId'] = $rows['classId'];
-                                                $_SESSION['classArmId'] = $rows['classArmId'];
-
-                                                echo "<script type = \"text/javascript\">
-        window.location = (\"ClassTeacher/index.php\")
-        </script>";
-                                            } else {
-
-                                                echo "<div class='alert alert-danger' role='alert'>
-        Invalid Username/Password!
-        </div>";
-                                            }
-                                        } else {
-
-                                            echo "<div class='alert alert-danger' role='alert'>
-        Invalid Username/Password!
-        </div>";
-                                        }
-                                    }
-                                    ?>
-
-
-                                    <div class="text-center">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Login Content -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-    <script src="js/ruang-admin.min.js"></script>
+        <input type="submit" value="Iniciar sesión">
+    </form>
+    <?php if (isset($mensaje_error)) echo "<p>$mensaje_error</p>"; ?>
 </body>
-
 </html>
