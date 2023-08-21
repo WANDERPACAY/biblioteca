@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $isbn = trim($_POST["isbn"]);
 
     // Variables para mostrar mensaje y redirigir
-    $mensajeError = "";
+    $mensajeError = "registro exitoso";
     $redireccion = "../pages/libros.php";
 
     // Validación de campos no vacíos ni con solamente espacios
@@ -26,7 +26,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                      VALUES ('$titulo', '$autor', '$genero', '$ano_publicacion', '$isbn')";
 
         if ($conn->query($consulta) === TRUE) {
-            $redireccion = "Location: ../pages/libros.php";
+            // Redirige después de un momento
+            echo "<script>
+                    alert('$mensajeError');
+                    setTimeout(function() {
+                        window.location.href = '$redireccion';
+                    }, 3000); // 3000 milisegundos = 3 segundos
+                  </script>";
+            exit(); // Importante para evitar que el resto del código se ejecute
         } else {
             $mensajeError = "Error al registrar el libro: " . $conn->error;
         }
@@ -34,12 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $conn->close();
 
-    // Mostrar mensaje de error y redireccionar después de un momento
+    // Muestra el mensaje de error
     echo "<script>
             alert('$mensajeError');
-            setTimeout(function() {
-                window.location.href = '$redireccion';
-            }, 3000); // 3000 milisegundos = 3 segundos
           </script>";
 }
 ?>

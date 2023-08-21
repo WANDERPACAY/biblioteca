@@ -1,26 +1,39 @@
 <?php
-// Verifica si se ha enviado el formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Establece la conexión a la base de datos (ajusta los detalles de conexión)
     include '../includes/conn.php';
 
-    // Recoge los valores del formulario
-    $titulo = $_POST["titulo"];
-    $autor = $_POST["autor"];
-    $genero = $_POST["genero"];
-    $ano_publicacion = $_POST["ano_publicacion"];
-    $isbn = $_POST["isbn"];
+    $nombre = trim($_POST["nombre"]);
+    $apellido = trim($_POST["apellido"]);
+    $correo = trim($_POST["correo"]);
+    $telefono = trim($_POST["telefono"]);
+    $direccion = trim($_POST["direccion"]);
+    $usuario = trim($_POST["usuario"]);
+    $contrasena = trim($_POST["contrasena"]);
 
-    // Consulta para insertar el libro en la base de datos
-    $consulta = "INSERT INTO libros (titulo, autor, genero, ano_publicacion, isbn)
-                 VALUES ('$titulo', '$autor', '$genero', '$ano_publicacion', '$isbn')";
+    $mensajeError = "registro exitoso";
+    $redireccion = "../pages/clientes.php";
 
-    if ($conn->query($consulta) === TRUE) {
-        header("Location: ../pages/libros.php");
+    if (empty($nombre) || empty($apellido) || empty($correo) || empty($usuario) || empty($contrasena)) {
+        $mensajeError = "Por favor, completa todos los campos obligatorios.";
+    } elseif ($telefono < 0) {
+        $mensajeError = "El número de teléfono no puede ser negativo.";
     } else {
-        echo "Error al registrar el libro: " . $conn->error;
+        $consulta = "INSERT INTO clientes (nombre, apellido, correo, telefono, direccion, usuario, contrasena)
+                     VALUES ('$nombre', '$apellido', '$correo', '$telefono', '$direccion', '$usuario', '$contrasena')";
+
+        if (!$conn->query($consulta)) {
+            $mensajeError = "Error al registrar el cliente: " . $conn->error;
+        }
     }
 
     $conn->close();
 }
 ?>
+
+<!-- Mostrar mensaje de error o éxito -->
+<script>
+    alert('<?php echo $mensajeError; ?>');
+    setTimeout(function() {
+        window.location.href = '<?php echo $redireccion; ?>';
+    }, 3000); // 3000 milisegundos = 3 segundos
+</script>
