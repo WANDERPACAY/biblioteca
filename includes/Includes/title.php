@@ -1,1 +1,0 @@
-  <title>CodeMinds</title>

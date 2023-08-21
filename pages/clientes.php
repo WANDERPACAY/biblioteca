@@ -34,14 +34,14 @@
 
             <div class="tasks-wrapper">
                 <form method="post">
-                    <button type="submit" name="boton1">Agregar libro</button>
-                    <button type="submit" name="boton2">Mostrar Libros</button>
+                    <button type="submit" name="boton1">Agregar Cliente</button>
+                    <button type="submit" name="boton2">Mostrar Clientes</button>
                 </form>
                 <?php
                 if (isset($_POST['boton1'])) {
-                    include '../includes/Includes/formulario_libro.php';
+                    include '../includes/Includes/formulario_cliente.php';
                 } elseif (isset($_POST['boton2'])) {
-                    include '../includes/Includes/tabla_libros.php';
+                    include '../includes/Includes/tabla_clientes.php';
                 }
                 ?>
             </div>

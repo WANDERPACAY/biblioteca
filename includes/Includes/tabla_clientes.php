@@ -1,24 +1,25 @@
 <div class="container">
-    <h2>Lista de Libros</h2>
+    <h2>Lista de Clientes</h2>
 
     <!-- Barra de búsqueda -->
     <div class="form-group">
-        <label for="busqueda">Buscar Libros:</label>
-        <input type="text" id="busqueda" class="form-control" placeholder="Título, autor, género, ISBN...">
+        <label for="busqueda">Buscar Clientes:</label>
+        <input type="text" id="busqueda" class="form-control" placeholder="Nombre, apellido, correo, teléfono...">
     </div>
 
-    <!-- Tabla de libros -->
+    <!-- Tabla de clientes -->
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Título</th>
-                <th>Autor</th>
-                <th>Género</th>
-                <th>Año de Publicación</th>
-                <th>ISBN</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Correo</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th>Usuario</th>
             </tr>
         </thead>
-        <tbody id="bookTable">
+        <tbody id="clientTable">
             <?php
             // Establece la conexión a la base de datos (ajusta los detalles de conexión)
             include '../includes/conn.php';
@@ -27,22 +28,23 @@
                 die("Conexión fallida: " . $conn->connect_error);
             }
 
-            // Consulta para obtener los libros
-            $consulta = "SELECT * FROM libros";
+            // Consulta para obtener los clientes
+            $consulta = "SELECT * FROM clientes";
             $resultado = $conn->query($consulta);
 
             if ($resultado->num_rows > 0) {
                 while ($fila = $resultado->fetch_assoc()) {
                     echo "<tr>";
-                    echo "<td>" . $fila["titulo"] . "</td>";
-                    echo "<td>" . $fila["autor"] . "</td>";
-                    echo "<td>" . $fila["genero"] . "</td>";
-                    echo "<td>" . $fila["ano_publicacion"] . "</td>";
-                    echo "<td>" . $fila["isbn"] . "</td>";
+                    echo "<td>" . $fila["nombre"] . "</td>";
+                    echo "<td>" . $fila["apellido"] . "</td>";
+                    echo "<td>" . $fila["correo"] . "</td>";
+                    echo "<td>" . $fila["telefono"] . "</td>";
+                    echo "<td>" . $fila["direccion"] . "</td>";
+                    echo "<td>" . $fila["usuario"] . "</td>";
                     echo "</tr>";
                 }
             } else {
-                echo "<tr><td colspan='5'>No se encontraron libros</td></tr>";
+                echo "<tr><td colspan='6'>No se encontraron clientes</td></tr>";
             }
 
             $conn->close();
@@ -57,11 +59,11 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-// Función para filtrar la tabla de libros
-function filtrarLibros() {
+// Función para filtrar la tabla de clientes
+function filtrarClientes() {
     var input = document.getElementById("busqueda");
     var filter = input.value.toLowerCase();
-    var table = document.getElementById("bookTable");
+    var table = document.getElementById("clientTable");
     var rows = table.getElementsByTagName("tr");
 
     for (var i = 0; i < rows.length; i++) {
@@ -87,5 +89,5 @@ function filtrarLibros() {
     }
 }
 
-document.getElementById("busqueda").addEventListener("input", filtrarLibros);
+document.getElementById("busqueda").addEventListener("input", filtrarClientes);
 </script>
