@@ -32,14 +32,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $clienteId = $filaCliente["id"];
             $libroId = $filaLibro["id"];
 
-            // Consulta para insertar el préstamo en la base de datos
-            $consulta = "INSERT INTO prestamos (cliente_id, libro_id, fecha_prestamo, fecha_devolucion)
-                         VALUES ('$clienteId', '$libroId', '$fechaPrestamo', '$fechaDevolucion')";
-
-            if ($conn->query($consulta) === TRUE) {
-                $mensajeError = "Registro exitoso";
+            // Validación de fechas
+            if ($fechaDevolucion < $fechaPrestamo) {
+                $mensajeError = "La fecha de devolución no puede ser menor que la fecha de préstamo.";
             } else {
-                $mensajeError = "Error al registrar el préstamo: " . $conn->error;
+                // Consulta para insertar el préstamo en la base de datos
+                $consulta = "INSERT INTO prestamos (cliente_id, libro_id, fecha_prestamo, fecha_devolucion)
+                             VALUES ('$clienteId', '$libroId', '$fechaPrestamo', '$fechaDevolucion')";
+
+                if ($conn->query($consulta) === TRUE) {
+                    $mensajeError = "Registro exitoso";
+                } else {
+                    $mensajeError = "Error al registrar el préstamo: " . $conn->error;
+                }
             }
         } else {
             $mensajeError = "El cliente o el libro no existen.";
